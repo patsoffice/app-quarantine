@@ -8,39 +8,31 @@ matrix:
   - os: osx
     osx_image: xcode10.1
   fast_finish: true
-
 before_install:
-  # gox simplifies building for multiple architectures
   - go get github.com/mitchellh/gox
-
 install:
   - # skip
-
 before_script:
   - if which sw_vers; then sw_vers; fi
   - go get -u golang.org/x/lint/golint
-
 script:
   - go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
-  - gox -os="darwin" -arch="amd64" -output="{{.Dir}}_{{.OS}}_{{.Arch}}" -ldflags "-X github.com/patsoffice/app-quarantine/cmd.Rev=`git rev-parse --short HEAD` -X github.com/patsoffice/app-quarantine/cmd.Ver=$TRAVIS_BRANCH" -verbose ./...
-
+  - gox -os="darwin" -arch="amd64" -output="app-quarantine_{{.OS}}_{{.Arch}}" -ldflags "-X github.com/patsoffice/app-quarantine/cmd.Rev=`git rev-parse --short HEAD` -X github.com/patsoffice/app-quarantine/cmd.Ver=$TRAVIS_BRANCH" -verbose ./...
 after_script:
   - test -z "$(gofmt -s -l -w . | tee /dev/stderr)"
   - test -z "$(golint ./...     | tee /dev/stderr)"
   - go vet ./...
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-
 notifications:
   email: false
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
-    secure: MNlebKPORc2Q79kqCVmcCjwN2mEwt/FDymMfqLuduX2hWls0xjPbi4mIgUO08Wtko+U21gdnJstWgINRdTfFyAxD88y4Sz2mpk1+lCCwxxNj/SSag4sDKvBWXOOCIKUZJXA3zAX8Sx36mZ3xwAolqjc4tdDKWJYH6ZimGHKwVGR4I3WLMvwXUslT1bFqzLpwwXrfiNfq0OslW4uPx9geEJtZzxMpkETwU73fp1ZDOgISZh2QthjUmvZ2unsLDyHd8c8fISVBZXwBlAONARiYUQISslET3SHjgLvzk9hTnoPvcUmU5Kt1Lo/+P7Y+biSDeoo7wz3y4SVJqUw0thcjRVHRk569T5cyCMUhWUJE/vINBe4MJnRa8J4VTXdrXGPR0DV3ygd0GAJREju6nW5QVr4/rW8nlGUEgusVK1oluZhgJxGV27fjbuytQSSgZub/bTm3XjR6oIH5VlParZp8hz0nKuNdUN9I4+7gMOBNimRpTSAuhmHjuQYF7QJ6HR2oB0cE6ptQdzvyqN3Vj07NSBLRIbz1jaXInlh4Z45RNtP6LJDfkyr8YkihTmT5vCnqzkHj33tJxuKW6jFF7+RNpwfte44I5UZSu2fe2swAMmECw3E1m670x9N++/izKVjToFNxvN1ecw9dTb+Mh3OV6HekHV6IAa8bV0BrujIQhJc=
+    secure: PRVSx2KWdx5S2Y/G0XCniY0jBK00XVTKZAh7VexAUMCwwoWbYtrwvqQLQv7J7MkVKypqtmEGzze2GUUeCMgaRMkL9PVRpTySKa3iETPza8z8zW2x25QtqGHRjQJP/iIcdVrbK+hG4Ns/KcoxXA5o66Dlj44udxnSRjc76tT6u7A8piMq+/CEv2e2T1Yz4fUTrmiT+I8Pc/r335vJF1vNYaND65PmcxCKTGkOXl5ijLJZS0lTZ0tS0+/cWA7lsdKo/N8Qegk1KQVqO65LbbEEBSiVrjyL/zPmXS6v0/nUujOX3Qe7Dls/SCLNkJjU3tlWYYAsedgyF3ECtFz02UYPgHdwm6FcdAA5mbUklL1eoJKALHSptXtq0s70cLc1mBA4xDciUhMxWBbKpKaTmR1C0C2IEh3FvgHVCKCEfcguIGUfVB8R+OrlQhnWPzfT3X3lq1+YWPy/ksysxTNC/Wc5N7WjBi6Rd6oVM8aSa9BCyank04mxw+IGPCiR/4hhsuK6CaYrgIm9sVtqYGhdEKRm84Prlj9JeFaSJqUfSPzHIeM5I9+qrEjKY7Vq6GDboUd1QMObO2qXXissVHWAty0gYYWzHcskc7huO5MjjLdXOdcwgW/6q/RHZ43dNXqlGCawV0Z03QBq9b2xhAGdIqPIgf4LuBmLTNQNqqsD6PZivPU=
   file:
-    - aliasman_darwin_amd64
+    - app-quarantine_darwin_amd64
   on:
     repo: patsoffice/app-quarantine
     tags: true
