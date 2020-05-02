@@ -20,7 +20,7 @@
 
 package main
 
-import "github.com/patsoffice/app-quarantine/v2/cmd"
+import "github.com/patsoffice/app-quarantine/cmd"
 
 func main() {
 	cmd.Execute()

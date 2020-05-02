@@ -1,4 +1,4 @@
-module github.com/patsoffice/app-quarantine/v2
+module github.com/patsoffice/app-quarantine
 
 go 1.14
 
