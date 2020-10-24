@@ -140,10 +140,10 @@ func rootRun(cobraCmd *cobra.Command, args []string) {
 			fmt.Printf("%s is quarantined", app)
 			if rootCmdFlags.fix {
 				if err := removeQuarantineXattr(app, rootCmdFlags.quarantineXattr); err != nil {
-					fmt.Fprintln(os.Stderr, err)
-					os.Exit(1)
+					fmt.Printf("%v", err)
+				} else {
+					fmt.Printf("... Removed quarantine.")
 				}
-				fmt.Printf("... Removed quarantine.")
 			}
 			fmt.Println()
 		}
